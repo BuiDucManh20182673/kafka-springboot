@@ -28,10 +28,15 @@ public class ProductService {
         ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(productId, productRestModel.getTitle(),
                 productRestModel.getPrice(), productRestModel.getQuantity());
 
+        log.info("Before publishing a ProductCreatedEvent");
+
         // topic, key, value
-        SendResult<String, ProductCreatedEvent> future =
+        SendResult<String, ProductCreatedEvent> result =
                 kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent).get();
 
+        log.info("Partition: {}", result.getRecordMetadata().partition());
+        log.info("Topic : {}", result.getRecordMetadata().topic());
+        log.info("Offset: {}", result.getRecordMetadata().offset());
 
         log.info("******* Returning product id");
 
